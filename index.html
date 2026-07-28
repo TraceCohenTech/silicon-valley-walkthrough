@@ -95,6 +95,13 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils.js';
 
+function M3(mesh, props) {
+  if (props.position) { mesh.position.copy(props.position); delete props.position; }
+  if (props.castShadow !== undefined) { mesh.castShadow = props.castShadow; delete props.castShadow; }
+  if (props.receiveShadow !== undefined) { mesh.receiveShadow = props.receiveShadow; delete props.receiveShadow; }
+  return mesh;
+}
+
 /* ================================================================
    SIMPLEX 2D NOISE (inline)
    ================================================================ */
@@ -337,8 +344,8 @@ function createBuilding(co){
     const w=10,d=7,h=4;mainH=h;
     const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),M.white);
     b.position.y=h/2;b.castShadow=true;g.add(b);tag(b);
-    g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(w-1,0.3,d-1),new THREE.MeshStandardMaterial({color:0x3a7a3a})),{position:new THREE.Vector3(0,h+0.15,0)}));
-    g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(w+0.1,0.5,d+0.1),accent),{position:new THREE.Vector3(0,0.25,0)}));
+    g.add(M3(new THREE.Mesh(new THREE.BoxGeometry(w-1,0.3,d-1),new THREE.MeshStandardMaterial({color:0x3a7a3a})),{position:new THREE.Vector3(0,h+0.15,0)}));
+    g.add(M3(new THREE.Mesh(new THREE.BoxGeometry(w+0.1,0.5,d+0.1),accent),{position:new THREE.Vector3(0,0.25,0)}));
     // Thumbs up
     const tp=new THREE.Mesh(new THREE.BoxGeometry(0.3,1.5,0.3),accent);tp.position.set(w/2+1.5,0.75,0);g.add(tp);
     const tt=new THREE.Mesh(new THREE.SphereGeometry(0.5,6,6),accent);tt.position.set(w/2+1.5,1.8,0);g.add(tt);
@@ -354,7 +361,7 @@ function createBuilding(co){
     });
     const wh=new THREE.Mesh(new THREE.BoxGeometry(8,5,5),M.white);
     wh.position.set(0,2.5,-5);wh.castShadow=true;g.add(wh);tag(wh);
-    g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(8.1,0.6,5.1),accent),{position:new THREE.Vector3(0,0.3,-5)}));
+    g.add(M3(new THREE.Mesh(new THREE.BoxGeometry(8.1,0.6,5.1),accent),{position:new THREE.Vector3(0,0.3,-5)}));
     addWindows(wh,8,5,5,3,5,'f');mainH=5;break;
   }
 
@@ -363,7 +370,7 @@ function createBuilding(co){
     const w=10,d=7,h=5;mainH=h;
     const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),M.white);
     b.position.y=h/2;b.castShadow=true;g.add(b);tag(b);
-    g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(w+0.1,0.8,d+0.1),accent),{position:new THREE.Vector3(0,h,0)}));
+    g.add(M3(new THREE.Mesh(new THREE.BoxGeometry(w+0.1,0.8,d+0.1),accent),{position:new THREE.Vector3(0,h,0)}));
     for(let i=0;i<2;i++){
       const st=new THREE.Mesh(new THREE.CylinderGeometry(0.3,0.4,4,8),M.concrete);
       st.position.set(-3+i*6,h+2,0);st.castShadow=true;g.add(st);
@@ -376,8 +383,8 @@ function createBuilding(co){
     const w=5,d=5,h=10;mainH=h;
     const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),M.white);
     b.position.y=h/2;b.castShadow=true;g.add(b);tag(b);
-    g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(w+0.1,1,d+0.1),accent),{position:new THREE.Vector3(0,h,0)}));
-    g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(2,1,2),M.concrete),{position:new THREE.Vector3(0,h+0.5,0)}));
+    g.add(M3(new THREE.Mesh(new THREE.BoxGeometry(w+0.1,1,d+0.1),accent),{position:new THREE.Vector3(0,h,0)}));
+    g.add(M3(new THREE.Mesh(new THREE.BoxGeometry(2,1,2),M.concrete),{position:new THREE.Vector3(0,h+0.5,0)}));
     addWindows(b,w,h,d,5,3,'f');addWindows(b,w,h,d,5,3,'b');
     addWindows(b,w,h,d,5,3,'l');addWindows(b,w,h,d,5,3,'r');break;
   }
@@ -387,7 +394,7 @@ function createBuilding(co){
     mainH=18;
     const b=new THREE.Mesh(new THREE.CylinderGeometry(2,2.5,mainH,8),M.white);
     b.position.y=mainH/2;b.castShadow=true;g.add(b);tag(b);
-    g.add(Object.assign(new THREE.Mesh(new THREE.ConeGeometry(2,3,8),new THREE.MeshStandardMaterial({color:0xddddee,roughness:0.2,metalness:0.3})),{position:new THREE.Vector3(0,mainH+1.5,0)}));
+    g.add(M3(new THREE.Mesh(new THREE.ConeGeometry(2,3,8),new THREE.MeshStandardMaterial({color:0xddddee,roughness:0.2,metalness:0.3})),{position:new THREE.Vector3(0,mainH+1.5,0)}));
     const ring=new THREE.Mesh(new THREE.TorusGeometry(2.6,0.15,4,8),accent);
     ring.rotation.x=Math.PI/2;ring.position.y=mainH*0.7;g.add(ring);break;
   }
@@ -399,7 +406,7 @@ function createBuilding(co){
       const h=7+i*2;
       const c=new THREE.Mesh(new THREE.CylinderGeometry(1.5,1.5,h,12),M.white);
       c.position.set(i*3.5-3.5,h/2,0);c.castShadow=true;g.add(c);tag(c);
-      g.add(Object.assign(new THREE.Mesh(new THREE.CylinderGeometry(1.6,1.6,0.5,12),accent),{position:new THREE.Vector3(i*3.5-3.5,h,0)}));
+      g.add(M3(new THREE.Mesh(new THREE.CylinderGeometry(1.6,1.6,0.5,12),accent),{position:new THREE.Vector3(i*3.5-3.5,h,0)}));
     }break;
   }
 
@@ -409,10 +416,10 @@ function createBuilding(co){
     for(let i=0;i<2;i++){
       const b=new THREE.Mesh(new THREE.BoxGeometry(3.5,9,3.5),M.white);
       b.position.set(i*5-2.5,4.5,0);b.castShadow=true;g.add(b);tag(b);
-      g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(3.6,0.6,3.6),accent),{position:new THREE.Vector3(i*5-2.5,9,0)}));
+      g.add(M3(new THREE.Mesh(new THREE.BoxGeometry(3.6,0.6,3.6),accent),{position:new THREE.Vector3(i*5-2.5,9,0)}));
       addWindows(b,3.5,9,3.5,5,2,'f');addWindows(b,3.5,9,3.5,5,2,'b');
     }
-    g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(5,1,2),M.white),{position:new THREE.Vector3(0,6,0)}));
+    g.add(M3(new THREE.Mesh(new THREE.BoxGeometry(5,1,2),M.white),{position:new THREE.Vector3(0,6,0)}));
     break;
   }
 
@@ -421,7 +428,7 @@ function createBuilding(co){
     const w=8,d=5,h=6;mainH=h;
     const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),new THREE.MeshStandardMaterial({color:0x88aabb,roughness:0.1,metalness:0.5}));
     b.position.y=h/2;b.castShadow=true;g.add(b);tag(b);
-    g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(w+0.1,0.5,d+0.1),accent),{position:new THREE.Vector3(0,0.25,0)}));
+    g.add(M3(new THREE.Mesh(new THREE.BoxGeometry(w+0.1,0.5,d+0.1),accent),{position:new THREE.Vector3(0,0.25,0)}));
     addWindows(b,w,h,d,3,5,'f',0x225588);addWindows(b,w,h,d,3,5,'b',0x225588);break;
   }
 
@@ -430,7 +437,7 @@ function createBuilding(co){
     const w=4,d=4,h=12;mainH=h;
     const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),new THREE.MeshStandardMaterial({color:0x222222,roughness:0.2,metalness:0.6}));
     b.position.y=h/2;b.castShadow=true;g.add(b);tag(b);
-    g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(w+0.1,0.3,d+0.1),new THREE.MeshStandardMaterial({color:0xffffff})),{position:new THREE.Vector3(0,h,0)}));
+    g.add(M3(new THREE.Mesh(new THREE.BoxGeometry(w+0.1,0.3,d+0.1),new THREE.MeshStandardMaterial({color:0xffffff})),{position:new THREE.Vector3(0,h,0)}));
     addWindows(b,w,h,d,6,3,'f',0x444444);addWindows(b,w,h,d,6,3,'b',0x444444);break;
   }
 
@@ -439,7 +446,7 @@ function createBuilding(co){
     const w=6,d=5,h=5;mainH=h;
     const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),M.white);
     b.position.y=h/2;b.castShadow=true;g.add(b);tag(b);
-    g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(w+0.1,h+0.1,0.15),accent),{position:new THREE.Vector3(0,h/2,d/2+0.07)}));
+    g.add(M3(new THREE.Mesh(new THREE.BoxGeometry(w+0.1,h+0.1,0.15),accent),{position:new THREE.Vector3(0,h/2,d/2+0.07)}));
     // Pitched roof
     const rg=new THREE.BufferGeometry();
     const hw=w/2+0.2,hd=d/2+0.2;
@@ -461,7 +468,7 @@ function createBuilding(co){
     b.position.y=s/2;b.castShadow=true;g.add(b);tag(b);
     const eg=new THREE.BoxGeometry(0.2,s+0.2,0.2);
     [[-1,-1],[1,-1],[1,1],[-1,1]].forEach(([sx,sz])=>{
-      g.add(Object.assign(new THREE.Mesh(eg,accent),{position:new THREE.Vector3(sx*s/2,s/2,sz*s/2)}));
+      g.add(M3(new THREE.Mesh(eg,accent),{position:new THREE.Vector3(sx*s/2,s/2,sz*s/2)}));
     });
     addWindows(b,s,s,s,3,3,'f');addWindows(b,s,s,s,3,3,'b');break;
   }
@@ -471,7 +478,7 @@ function createBuilding(co){
     const w=6,d=6,h=7;mainH=h;
     const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),new THREE.MeshStandardMaterial({color:0x1a1a2a,roughness:0.3,metalness:0.5}));
     b.position.y=h/2;b.castShadow=true;g.add(b);tag(b);
-    g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(w+0.3,0.3,d+0.3),new THREE.MeshStandardMaterial({color:0x333355,emissive:0x111133,emissiveIntensity:0.3})),{position:new THREE.Vector3(0,h,0)}));
+    g.add(M3(new THREE.Mesh(new THREE.BoxGeometry(w+0.3,0.3,d+0.3),new THREE.MeshStandardMaterial({color:0x333355,emissive:0x111133,emissiveIntensity:0.3})),{position:new THREE.Vector3(0,h,0)}));
     addWindows(b,w,h,d,4,4,'f',0x222244);addWindows(b,w,h,d,4,4,'b',0x222244);break;
   }
 
@@ -480,18 +487,18 @@ function createBuilding(co){
     const w=9,d=6,h=5;mainH=h;
     const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),M.white);
     b.position.y=h/2;b.castShadow=true;g.add(b);tag(b);
-    g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(w+0.1,0.6,d+0.1),accent),{position:new THREE.Vector3(0,0.3,0)}));
+    g.add(M3(new THREE.Mesh(new THREE.BoxGeometry(w+0.1,0.6,d+0.1),accent),{position:new THREE.Vector3(0,0.3,0)}));
     addWindows(b,w,h,d,3,5,'f');
     // Launch pad
-    g.add(Object.assign(new THREE.Mesh(new THREE.CylinderGeometry(1.5,1.5,0.3,12),M.concrete),{position:new THREE.Vector3(w/2+3,0.15,0)}));
+    g.add(M3(new THREE.Mesh(new THREE.CylinderGeometry(1.5,1.5,0.3,12),M.concrete),{position:new THREE.Vector3(w/2+3,0.15,0)}));
     // Rocket
-    g.add(Object.assign(new THREE.Mesh(new THREE.CylinderGeometry(0.3,0.4,5,8),M.white),{position:new THREE.Vector3(w/2+3,2.8,0)}));
-    g.add(Object.assign(new THREE.Mesh(new THREE.ConeGeometry(0.3,1.2,8),M.white),{position:new THREE.Vector3(w/2+3,5.9,0)}));
+    g.add(M3(new THREE.Mesh(new THREE.CylinderGeometry(0.3,0.4,5,8),M.white),{position:new THREE.Vector3(w/2+3,2.8,0)}));
+    g.add(M3(new THREE.Mesh(new THREE.ConeGeometry(0.3,1.2,8),M.white),{position:new THREE.Vector3(w/2+3,5.9,0)}));
     // Flame
     const fl=new THREE.Mesh(new THREE.ConeGeometry(0.35,0.8,8),new THREE.MeshStandardMaterial({color:0xff6600,emissive:0xff4400,emissiveIntensity:0.5}));
     fl.rotation.x=Math.PI;fl.position.set(w/2+3,0.3,0);g.add(fl);
     // Tower
-    g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(0.15,6,0.15),M.metal),{position:new THREE.Vector3(w/2+4.2,3,0)}));
+    g.add(M3(new THREE.Mesh(new THREE.BoxGeometry(0.15,6,0.15),M.metal),{position:new THREE.Vector3(w/2+4.2,3,0)}));
     break;
   }
 
@@ -501,9 +508,9 @@ function createBuilding(co){
     mainH=h;
     const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),M.white);
     b.position.y=h/2;b.castShadow=true;g.add(b);tag(b);
-    g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(w+0.1,0.6,d+0.1),accent),{position:new THREE.Vector3(0,0.3,0)}));
-    g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(w+0.1,0.3,d+0.1),accent),{position:new THREE.Vector3(0,h,0)}));
-    g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(w*0.3,0.8,d*0.3),M.concrete),{position:new THREE.Vector3(0,h+0.4,0)}));
+    g.add(M3(new THREE.Mesh(new THREE.BoxGeometry(w+0.1,0.6,d+0.1),accent),{position:new THREE.Vector3(0,0.3,0)}));
+    g.add(M3(new THREE.Mesh(new THREE.BoxGeometry(w+0.1,0.3,d+0.1),accent),{position:new THREE.Vector3(0,h,0)}));
+    g.add(M3(new THREE.Mesh(new THREE.BoxGeometry(w*0.3,0.8,d*0.3),M.concrete),{position:new THREE.Vector3(0,h+0.4,0)}));
     addWindows(b,w,h,d,Math.floor(h/2),3,'f');addWindows(b,w,h,d,Math.floor(h/2),3,'b');
     addWindows(b,w,h,d,Math.floor(h/2),2,'l');addWindows(b,w,h,d,Math.floor(h/2),2,'r');
     break;
@@ -512,7 +519,7 @@ function createBuilding(co){
 
   // Company accent sign
   const signGeo=new THREE.BoxGeometry(3,0.6,0.1);
-  g.add(Object.assign(new THREE.Mesh(signGeo,accent),{position:new THREE.Vector3(0,mainH+1.5,3)}));
+  g.add(M3(new THREE.Mesh(signGeo,accent),{position:new THREE.Vector3(0,mainH+1.5,3)}));
 
   const ty=getTerrainHeight(co.x,co.z);
   g.position.set(co.x, Math.max(ty,0), co.z);
@@ -542,9 +549,9 @@ townData.forEach(t=>{
 // Church
 {
   const ch=new THREE.Group();
-  ch.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(4,5,6),M.white),{position:new THREE.Vector3(0,2.5,0),castShadow:true}));
-  ch.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(1.5,4,1.5),M.white),{position:new THREE.Vector3(0,7,2)}));
-  ch.add(Object.assign(new THREE.Mesh(new THREE.ConeGeometry(1,3,4),new THREE.MeshStandardMaterial({color:0x888888,roughness:0.3,metalness:0.5})),{position:new THREE.Vector3(0,10.5,2)}));
+  ch.add(M3(new THREE.Mesh(new THREE.BoxGeometry(4,5,6),M.white),{position:new THREE.Vector3(0,2.5,0),castShadow:true}));
+  ch.add(M3(new THREE.Mesh(new THREE.BoxGeometry(1.5,4,1.5),M.white),{position:new THREE.Vector3(0,7,2)}));
+  ch.add(M3(new THREE.Mesh(new THREE.ConeGeometry(1,3,4),new THREE.MeshStandardMaterial({color:0x888888,roughness:0.3,metalness:0.5})),{position:new THREE.Vector3(0,10.5,2)}));
   const ty=Math.max(getTerrainHeight(-42,30),0);
   ch.position.set(-42,ty,30);scene.add(ch);
 }
@@ -577,13 +584,13 @@ for(let a=0;a<16;a++){
 {
   const hw=new THREE.Group();
   const dL=40;
-  hw.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(4,0.4,dL),M.concrete),{position:new THREE.Vector3(0,5,0),castShadow:true}));
-  hw.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(3.5,0.1,dL),M.road),{position:new THREE.Vector3(0,5.25,0)}));
+  hw.add(M3(new THREE.Mesh(new THREE.BoxGeometry(4,0.4,dL),M.concrete),{position:new THREE.Vector3(0,5,0),castShadow:true}));
+  hw.add(M3(new THREE.Mesh(new THREE.BoxGeometry(3.5,0.1,dL),M.road),{position:new THREE.Vector3(0,5.25,0)}));
   for(let i=-3;i<=3;i++){
-    hw.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(0.6,5,0.6),M.concrete),{position:new THREE.Vector3(0,2.5,i*5),castShadow:true}));
+    hw.add(M3(new THREE.Mesh(new THREE.BoxGeometry(0.6,5,0.6),M.concrete),{position:new THREE.Vector3(0,2.5,i*5),castShadow:true}));
   }
   for(const s of[-1,1]){
-    hw.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(0.1,0.6,dL),M.metal),{position:new THREE.Vector3(s*1.8,5.5,0)}));
+    hw.add(M3(new THREE.Mesh(new THREE.BoxGeometry(0.1,0.6,dL),M.metal),{position:new THREE.Vector3(s*1.8,5.5,0)}));
   }
   const rUp=new THREE.Mesh(new THREE.BoxGeometry(3.5,0.3,10),M.road);
   rUp.position.set(0,2.5,dL/2+5);rUp.rotation.x=-0.25;hw.add(rUp);
@@ -686,22 +693,22 @@ scene.add(pplInst);
    ================================================================ */
 function makeCrane(x,z,h=15){
   const g=new THREE.Group();
-  g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(0.3,h,0.3),M.crane),{position:new THREE.Vector3(0,h/2,0),castShadow:true}));
+  g.add(M3(new THREE.Mesh(new THREE.BoxGeometry(0.3,h,0.3),M.crane),{position:new THREE.Vector3(0,h/2,0),castShadow:true}));
   for(let i=0;i<h;i+=2){
-    g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(0.05,0.05,0.5),M.crane),{position:new THREE.Vector3(0,i+1,0),rotation:new THREE.Euler(0,Math.PI/4,0)}));
+    g.add(M3(new THREE.Mesh(new THREE.BoxGeometry(0.05,0.05,0.5),M.crane),{position:new THREE.Vector3(0,i+1,0),rotation:new THREE.Euler(0,Math.PI/4,0)}));
   }
   const jL=12;
-  g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(0.2,0.2,jL),M.crane),{position:new THREE.Vector3(0,h,jL/2-2)}));
-  g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(0.2,0.2,4),M.crane),{position:new THREE.Vector3(0,h,-4)}));
-  g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(0.6,0.8,1),new THREE.MeshStandardMaterial({color:0x555555})),{position:new THREE.Vector3(0,h-0.5,-5)}));
+  g.add(M3(new THREE.Mesh(new THREE.BoxGeometry(0.2,0.2,jL),M.crane),{position:new THREE.Vector3(0,h,jL/2-2)}));
+  g.add(M3(new THREE.Mesh(new THREE.BoxGeometry(0.2,0.2,4),M.crane),{position:new THREE.Vector3(0,h,-4)}));
+  g.add(M3(new THREE.Mesh(new THREE.BoxGeometry(0.6,0.8,1),new THREE.MeshStandardMaterial({color:0x555555})),{position:new THREE.Vector3(0,h-0.5,-5)}));
   // Cable + hook
-  g.add(Object.assign(new THREE.Mesh(new THREE.CylinderGeometry(0.02,0.02,h*0.6,4),M.metal),{position:new THREE.Vector3(0,h-h*0.3,jL-4)}));
-  g.add(Object.assign(new THREE.Mesh(new THREE.TorusGeometry(0.15,0.04,4,8),M.metal),{position:new THREE.Vector3(0,h-h*0.6-0.15,jL-4)}));
+  g.add(M3(new THREE.Mesh(new THREE.CylinderGeometry(0.02,0.02,h*0.6,4),M.metal),{position:new THREE.Vector3(0,h-h*0.3,jL-4)}));
+  g.add(M3(new THREE.Mesh(new THREE.TorusGeometry(0.15,0.04,4,8),M.metal),{position:new THREE.Vector3(0,h-h*0.6-0.15,jL-4)}));
   // Support cables
   const lm=new THREE.LineBasicMaterial({color:0x666666});
   g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,h+1,0),new THREE.Vector3(0,h,jL-3)]),lm));
   g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,h+1,0),new THREE.Vector3(0,h,-5)]),lm));
-  g.add(Object.assign(new THREE.Mesh(new THREE.ConeGeometry(0.15,1.5,4),M.crane),{position:new THREE.Vector3(0,h+1.5,0)}));
+  g.add(M3(new THREE.Mesh(new THREE.ConeGeometry(0.15,1.5,4),M.crane),{position:new THREE.Vector3(0,h+1.5,0)}));
   g.position.set(x,Math.max(getTerrainHeight(x,z),0),z);
   scene.add(g);
 }
@@ -714,10 +721,10 @@ makeCrane(30,30,16);makeCrane(-35,25,14);makeCrane(15,-35,13);makeCrane(-15,10,1
   const g=new THREE.Group();
   for(let a=0;a<4;a++){
     const t=a/4*Math.PI*2+Math.PI/4;
-    g.add(Object.assign(new THREE.Mesh(new THREE.CylinderGeometry(0.1,0.15,6,6),M.metal),{position:new THREE.Vector3(Math.cos(t),3,Math.sin(t))}));
+    g.add(M3(new THREE.Mesh(new THREE.CylinderGeometry(0.1,0.15,6,6),M.metal),{position:new THREE.Vector3(Math.cos(t),3,Math.sin(t))}));
   }
-  g.add(Object.assign(new THREE.Mesh(new THREE.CylinderGeometry(1.5,1.5,2.5,12),M.metal),{position:new THREE.Vector3(0,7,0)}));
-  g.add(Object.assign(new THREE.Mesh(new THREE.SphereGeometry(1.5,12,6,0,Math.PI*2,0,Math.PI/2),M.metal),{position:new THREE.Vector3(0,8.25,0)}));
+  g.add(M3(new THREE.Mesh(new THREE.CylinderGeometry(1.5,1.5,2.5,12),M.metal),{position:new THREE.Vector3(0,7,0)}));
+  g.add(M3(new THREE.Mesh(new THREE.SphereGeometry(1.5,12,6,0,Math.PI*2,0,Math.PI/2),M.metal),{position:new THREE.Vector3(0,8.25,0)}));
   g.position.set(42,Math.max(getTerrainHeight(42,25),0),25);scene.add(g);
 }
 
@@ -754,11 +761,11 @@ scene.add(slPoleInst);
 function makeBillboard(x,z,rot=0){
   const g=new THREE.Group();
   for(const sx of[-1,1]){
-    g.add(Object.assign(new THREE.Mesh(new THREE.CylinderGeometry(0.08,0.08,4,6),M.metal),{position:new THREE.Vector3(sx,2,0)}));
+    g.add(M3(new THREE.Mesh(new THREE.CylinderGeometry(0.08,0.08,4,6),M.metal),{position:new THREE.Vector3(sx,2,0)}));
   }
-  g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(3,1.5,0.1),M.white),{position:new THREE.Vector3(0,4.5,0)}));
+  g.add(M3(new THREE.Mesh(new THREE.BoxGeometry(3,1.5,0.1),M.white),{position:new THREE.Vector3(0,4.5,0)}));
   const adC=[0x2288cc,0xcc4422,0x44aa44,0xcc8822];
-  g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(2.8,1.3,0.02),new THREE.MeshStandardMaterial({color:adC[Math.floor(Math.random()*4)]})),{position:new THREE.Vector3(0,4.5,0.07)}));
+  g.add(M3(new THREE.Mesh(new THREE.BoxGeometry(2.8,1.3,0.02),new THREE.MeshStandardMaterial({color:adC[Math.floor(Math.random()*4)]})),{position:new THREE.Vector3(0,4.5,0.07)}));
   g.position.set(x,Math.max(getTerrainHeight(x,z),0),z);g.rotation.y=rot;scene.add(g);
 }
 makeBillboard(-30,-35,0.3);makeBillboard(35,-30,-0.5);makeBillboard(-10,40,1.2);
@@ -770,8 +777,8 @@ function makePowerLine(x1,z1,x2,z2){
   const ty1=Math.max(getTerrainHeight(x1,z1),0),ty2=Math.max(getTerrainHeight(x2,z2),0);
   const poleMat=new THREE.MeshStandardMaterial({color:0x665533,roughness:0.8});
   for(const[px,pz,py]of[[x1,z1,ty1],[x2,z2,ty2]]){
-    scene.add(Object.assign(new THREE.Mesh(new THREE.CylinderGeometry(0.06,0.08,5,6),poleMat),{position:new THREE.Vector3(px,py+2.5,pz)}));
-    scene.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(1.5,0.08,0.08),poleMat),{position:new THREE.Vector3(px,py+4.8,pz)}));
+    scene.add(M3(new THREE.Mesh(new THREE.CylinderGeometry(0.06,0.08,5,6),poleMat),{position:new THREE.Vector3(px,py+2.5,pz)}));
+    scene.add(M3(new THREE.Mesh(new THREE.BoxGeometry(1.5,0.08,0.08),poleMat),{position:new THREE.Vector3(px,py+4.8,pz)}));
   }
   const wMat=new THREE.LineBasicMaterial({color:0x333333});
   for(let w=-1;w<=1;w++){
@@ -786,15 +793,15 @@ makePowerLine(-48,35,-38,35);makePowerLine(-38,35,-28,35);makePowerLine(38,35,48
    ================================================================ */
 function makeParkingLot(x,z,w,d){
   const ty=Math.max(getTerrainHeight(x,z),0);
-  scene.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(w,0.06,d),new THREE.MeshStandardMaterial({color:0x3a3a3a,roughness:0.95})),{position:new THREE.Vector3(x,ty+0.03,z),receiveShadow:true}));
+  scene.add(M3(new THREE.Mesh(new THREE.BoxGeometry(w,0.06,d),new THREE.MeshStandardMaterial({color:0x3a3a3a,roughness:0.95})),{position:new THREE.Vector3(x,ty+0.03,z),receiveShadow:true}));
   const lc=Math.floor(w/1.2);
   const lMat=new THREE.MeshStandardMaterial({color:0xffffff,roughness:0.5});
   for(let i=0;i<lc;i++){
-    scene.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(0.05,0.01,d*0.8),lMat),{position:new THREE.Vector3(x-w/2+i*1.2+0.6,ty+0.07,z)}));
+    scene.add(M3(new THREE.Mesh(new THREE.BoxGeometry(0.05,0.01,d*0.8),lMat),{position:new THREE.Vector3(x-w/2+i*1.2+0.6,ty+0.07,z)}));
   }
   for(let i=0;i<Math.min(lc-1,5);i++){
     if(Math.random()>0.4){
-      scene.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(0.5,0.2,0.8),new THREE.MeshStandardMaterial({color:carPalette[Math.floor(Math.random()*8)],roughness:0.4})),{position:new THREE.Vector3(x-w/2+i*1.2+1.2,ty+0.16,z+(Math.random()-0.5)*d*0.3)}));
+      scene.add(M3(new THREE.Mesh(new THREE.BoxGeometry(0.5,0.2,0.8),new THREE.MeshStandardMaterial({color:carPalette[Math.floor(Math.random()*8)],roughness:0.4})),{position:new THREE.Vector3(x-w/2+i*1.2+1.2,ty+0.16,z+(Math.random()-0.5)*d*0.3)}));
     }
   }
 }
@@ -807,10 +814,10 @@ function makeBench(x,z,rot=0){
   const ty=Math.max(getTerrainHeight(x,z),0);
   const g=new THREE.Group();
   const wd=new THREE.MeshStandardMaterial({color:0x664422,roughness:0.8});
-  g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(0.8,0.05,0.3),wd),{position:new THREE.Vector3(0,0.3,0)}));
-  g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(0.8,0.3,0.05),wd),{position:new THREE.Vector3(0,0.45,-0.12)}));
+  g.add(M3(new THREE.Mesh(new THREE.BoxGeometry(0.8,0.05,0.3),wd),{position:new THREE.Vector3(0,0.3,0)}));
+  g.add(M3(new THREE.Mesh(new THREE.BoxGeometry(0.8,0.3,0.05),wd),{position:new THREE.Vector3(0,0.45,-0.12)}));
   for(const sx of[-0.3,0.3]){
-    g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(0.04,0.3,0.04),M.metal),{position:new THREE.Vector3(sx,0.15,0)}));
+    g.add(M3(new THREE.Mesh(new THREE.BoxGeometry(0.04,0.3,0.04),M.metal),{position:new THREE.Vector3(sx,0.15,0)}));
   }
   g.position.set(x,ty,z);g.rotation.y=rot;scene.add(g);
 }
@@ -820,11 +827,11 @@ function makeBusStop(x,z){
   const ty=Math.max(getTerrainHeight(x,z),0);
   const g=new THREE.Group();
   const glass=new THREE.MeshStandardMaterial({color:0x88aacc,roughness:0.2,metalness:0.5,transparent:true,opacity:0.7});
-  g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(2,0.08,1),glass),{position:new THREE.Vector3(0,2.2,0)}));
+  g.add(M3(new THREE.Mesh(new THREE.BoxGeometry(2,0.08,1),glass),{position:new THREE.Vector3(0,2.2,0)}));
   for(const sx of[-0.9,0.9]){
-    g.add(Object.assign(new THREE.Mesh(new THREE.CylinderGeometry(0.04,0.04,2.2,6),M.metal),{position:new THREE.Vector3(sx,1.1,-0.4)}));
+    g.add(M3(new THREE.Mesh(new THREE.CylinderGeometry(0.04,0.04,2.2,6),M.metal),{position:new THREE.Vector3(sx,1.1,-0.4)}));
   }
-  g.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(2,1.5,0.05),new THREE.MeshStandardMaterial({color:0x88aacc,roughness:0.2,transparent:true,opacity:0.5})),{position:new THREE.Vector3(0,1.35,-0.47)}));
+  g.add(M3(new THREE.Mesh(new THREE.BoxGeometry(2,1.5,0.05),new THREE.MeshStandardMaterial({color:0x88aacc,roughness:0.2,transparent:true,opacity:0.5})),{position:new THREE.Vector3(0,1.35,-0.47)}));
   g.position.set(x,ty,z);scene.add(g);
 }
 makeBusStop(-10,2);makeBusStop(15,-18);makeBusStop(-30,20);
@@ -837,7 +844,7 @@ const hedgeM=new THREE.MeshStandardMaterial({color:0x2a6a2a,roughness:0.8});
 companies.slice(0,10).forEach(co=>{
   for(let i=0;i<2;i++){
     const hx=co.x+(i===0?-4:4),hz=co.z+3;
-    scene.add(Object.assign(new THREE.Mesh(hedgeG,hedgeM),{position:new THREE.Vector3(hx,Math.max(getTerrainHeight(hx,hz),0)+0.3,hz),rotation:new THREE.Euler(0,Math.random()*0.5,0)}));
+    scene.add(M3(new THREE.Mesh(hedgeG,hedgeM),{position:new THREE.Vector3(hx,Math.max(getTerrainHeight(hx,hz),0)+0.3,hz),rotation:new THREE.Euler(0,Math.random()*0.5,0)}));
   }
 });
 
