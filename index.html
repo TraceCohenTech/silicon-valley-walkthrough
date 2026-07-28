@@ -318,12 +318,12 @@ const camera = new THREE.PerspectiveCamera(70, window.innerWidth/window.innerHei
 camera.position.set(0, 1.6, 40);
 
 /* ---------- Lighting ---------- */
-const hemiLight = new THREE.HemisphereLight(0xbfe3ff, 0x4CAF50, 0.9);
+const hemiLight = new THREE.HemisphereLight(0xbfe3ff, 0x4CAF50, 1.4);
 scene.add(hemiLight);
-const sunLight = new THREE.DirectionalLight(0xffffff, 1.3);
-sunLight.position.set(60, 90, 40);
+const sunLight = new THREE.DirectionalLight(0xfff8e7, 2.0);
+sunLight.position.set(40, 80, 60);
 scene.add(sunLight);
-const fillLight = new THREE.AmbientLight(0xffffff, 0.35);
+const fillLight = new THREE.AmbientLight(0xffffff, 0.6);
 scene.add(fillLight);
 
 /* ---------- Sky Dome ---------- */
@@ -1122,7 +1122,7 @@ let dnTransitionT = 0; // 0 = day, 1 = night
 const dnToggle = document.getElementById('dnToggle');
 const dayColors = {
   hemiSky: new THREE.Color(0xbfe3ff), hemiGround: new THREE.Color(0x4CAF50),
-  sun: new THREE.Color(0xffffff), sunIntensity: 1.3, hemiIntensity: 0.9, ambIntensity: 0.35,
+  sun: new THREE.Color(0xfff8e7), sunIntensity: 2.0, hemiIntensity: 1.4, ambIntensity: 0.6,
   skyTop: new THREE.Color(0x1e6fd9), skyBot: new THREE.Color(0xbfe3ff),
 };
 const nightColors = {
@@ -1147,30 +1147,31 @@ function updateDayNight(dt){
   sunLight.intensity = THREE.MathUtils.lerp(dayColors.sunIntensity, nightColors.sunIntensity, t);
   fillLight.intensity = THREE.MathUtils.lerp(dayColors.ambIntensity, nightColors.ambIntensity, t);
 
-  // sky vertex colors interpolate
-  const posAttr = sky.geometry.attributes.position;
-  const colorAttr = sky.geometry.attributes.color;
-  for(let i=0;i<posAttr.count;i++){
-    const y = posAttr.getY(i);
-    const f = THREE.MathUtils.clamp((y+300)/600,0,1);
-    const cDay = dayColors.skyBot.clone().lerp(dayColors.skyTop, f);
-    const cNight = nightColors.skyBot.clone().lerp(nightColors.skyTop, f);
-    const c = cDay.lerp(cNight, t);
-    colorAttr.setXYZ(i, c.r, c.g, c.b);
-  }
-  colorAttr.needsUpdate = true;
+  // sky vertex colors — only update when transitioning
+  if(Math.abs(target - t) > 0.001){
+    const posAttr = sky.geometry.attributes.position;
+    const colorAttr = sky.geometry.attributes.color;
+    for(let i=0;i<posAttr.count;i++){
+      const y = posAttr.getY(i);
+      const f = THREE.MathUtils.clamp((y+300)/600,0,1);
+      const cDay = dayColors.skyBot.clone().lerp(dayColors.skyTop, f);
+      const cNight = nightColors.skyBot.clone().lerp(nightColors.skyTop, f);
+      const c = cDay.lerp(cNight, t);
+      colorAttr.setXYZ(i, c.r, c.g, c.b);
+    }
+    colorAttr.needsUpdate = true;
 
-  starMat.opacity = t * 0.9;
+    starMat.opacity = t * 0.9;
 
-  // building windows glow at night
-  Object.values(buildingGroups).forEach(bg=>{
-    if(!bg.built || !bg.built.windows) return;
-    bg.built.windows.forEach(strip=>{
-      strip.children.forEach(w=>{
-        w.material.emissiveIntensity = t * 1.4;
+    Object.values(buildingGroups).forEach(bg=>{
+      if(!bg.built || !bg.built.windows) return;
+      bg.built.windows.forEach(strip=>{
+        strip.children.forEach(w=>{
+          w.material.emissiveIntensity = t * 1.4;
+        });
       });
     });
-  });
+  }
 }
 
 /* ============================================================
@@ -1181,9 +1182,9 @@ const pitchObject = new THREE.Object3D();
 yawObject.add(pitchObject);
 pitchObject.add(camera);
 camera.position.set(0,0,0);
-yawObject.position.set(0, 1.6, 40);
-yawObject.rotation.y = Math.PI;
-pitchObject.rotation.x = -0.15;
+yawObject.position.set(0, 1.6, 55);
+yawObject.rotation.y = 0;
+pitchObject.rotation.x = -0.08;
 scene.add(yawObject);
 
 let isActive = false;
